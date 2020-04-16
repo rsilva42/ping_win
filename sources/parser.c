@@ -1,13 +1,28 @@
 #include "parser.h"
 
-ping_tokens_t	parse(int ac, char **av)
+int				parse_flags(ping_token_t *token, int ac, char **av)
 {
-	ping_flags_t	flags;
-	ping_host_t	host; // may just be a string
-	size_t		offset;
+	(void)token;
+	(void)ac;
+	(void)av;
+	printf("parsing flags\n");
+	return (0);
+}
+
+struct hostent	*parse_host(int flags, char **av)
+{
+	(void)flags;
+	(void)av;
+	printf("parsing host\n");
+	return (NULL);
+}
+
+ping_token_t	parse(int ac, char **av)
+{
+	size_t			offset;
 	ping_token_t	token;
 
-	token.flags = parse_flags(*offset, ac, av);
-	token.host = parse_host(flags, av + offset);
+	offset = parse_flags(&token, ac, av);
+	token.host = parse_host(token.flags, av + offset);
 	return (token);
 }

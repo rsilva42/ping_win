@@ -2,13 +2,13 @@
 
 int		main(int argc, char **argv)
 {
-	t_ping_token	tokens;
-	t_ping_info		info;
+	ping_token_t	tokens;
+	ping_info_t		info;
 
 	if (argc > 1)
 	{
 		tokens = parse(argc, argv);
-		ping(&info, tokens);
+		info = ping(tokens);
 		print_info(info);
 	}
 	else
