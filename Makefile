@@ -7,6 +7,7 @@ INCL =	includes
 SRCS =	sources/main.c\
 		sources/parser.c\
 		sources/ping.c\
+		sources/print.c
 
 OBJS =	$(SRCS:sources/%.c=objects/%.o)
 
