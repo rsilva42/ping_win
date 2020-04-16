@@ -1,24 +1,39 @@
 #include "ping.h"
 
-int			no_sigint = 1;
+int			ping_no_sigint = 1;
 
 void		handle_sigint(int signal)
 {
 	if (signal == SIGINT)
-		no_sigint = 0;
+		ping_no_sigint = 0;
+}
+
+ping_connect_t	connect(ping_token_t token)
+{
+	ping_connect_t	connection;
+
+	(void)token;
+	printf("connecting\n");
+	return (connection);
+}
+
+void			send(ping_connect_t connection)
+{
+	(void)connection;
+	printf("sending\n");
 }
 
 // sets a connection and pings in a loop
-ping_info_t	ping(ping_token_t token)
+ping_info_t		ping(ping_token_t token)
 {
 	ping_info_t		info;
 	ping_connect_t	connection;
 	time_t			send_time, reply_time; //data type may change
-	reply_t			reply;
+	ping_reply_t	reply;
 
-	connection = connect(host);
-	//signal_handler set up
-	while (no_sigint)
+	connection = connect(token);
+	signal(SIGINT, handle_sigint);
+	while (ping_no_sigint)
 	{
 		send(connection);
 		info->sent_count++;

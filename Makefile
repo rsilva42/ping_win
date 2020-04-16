@@ -1,6 +1,6 @@
 NAME = ping_win
 
-CC = gcc
+CC = /usr/bin/gcc
 CCFLAGS = -Wall -Wextra -Werror -I $(INCL)
 
 INCL =	includes
@@ -22,7 +22,7 @@ $(NAME): $(OBJS)
 # compile object
 objects/%.o: sources/%.c
 	@/bin/mkdir -p objects
-	gcc $(CCFLAGS) $< -o $@
+	$(CC) $(CCFLAGS) -c $< -o $@
 
 # delete objects
 clean:
