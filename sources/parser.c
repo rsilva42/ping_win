@@ -32,7 +32,7 @@ void			get_flag(ping_token_t *token, char **flag_str)
 int				parse_flags(ping_token_t *token, int ac, char **av)
 {
 	int		i;
-	printf("parsing flags\n");
+
 	for (i = 1; i < ac && av[i][0] == '-'; i++)
 	{
 		get_flag(token, &av[i]);
@@ -42,12 +42,28 @@ int				parse_flags(ping_token_t *token, int ac, char **av)
 	return (i);
 }
 
-struct hostent	*parse_host(int flags, char **av)
+struct addrinfo	*parse_host(char **av)
 {
-	(void)flags;
-	(void)av;
+	struct addrinfo	*host_list = NULL; //Remember to free
+	struct addrinfo	hints = { 0 };
+	int				gai_error;
+
 	printf("parsing host\n");
-	return (NULL);
+	if (av[0] && av[1])
+		too_many_args_error();
+
+	printf("av[0]: %s\n", av[0]);
+
+	hints.ai_family = AF_INET;
+	gai_error = getaddrinfo("www.google.com", NULL, &hints, &host_list);
+	if (gai_error)
+		printf("here\n");
+	// 	get_host_error(gai_strerror(gai_error));
+
+	// printf("host_list->name: %s\n", host_list->ai_canonname);
+	// fflush(stdout);
+	exit(0);
+	return (host_list);
 }
 
 ping_token_t	parse(int ac, char **av)
@@ -56,6 +72,6 @@ ping_token_t	parse(int ac, char **av)
 	ping_token_t	token = { 0 };
 
 	offset = parse_flags(&token, ac, av);
-	token.host = parse_host(token.flags, av + offset);
+	token.host_list = parse_host(av + offset); //do i need the whole list?
 	return (token);
 }

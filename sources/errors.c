@@ -22,7 +22,6 @@ void	flag_parse_error(ping_token_t *token)
 	{
 		char	*error_msg = "invalid time to live value.\n";
 		write(STDERR_FILENO, error_msg, strlen(error_msg));
-		printf("token:\n flags: %ld\n ttl: %ld\n", token->flags, token->ttl);
 	}
 	else
 	{
@@ -32,3 +31,22 @@ void	flag_parse_error(ping_token_t *token)
 	}
 	exit(EXIT_FAILURE);
 }
+
+void	too_many_args_error(void)
+{
+	char	*error_msg = "ping_win: too many arguments\n";
+
+	write(STDERR_FILENO, error_msg, strlen(error_msg));
+	print_usage();
+}
+
+void	get_host_error(const char *error_msg)
+{
+	char	*error_prefix = "ping_win: ";
+
+	write(STDERR_FILENO, error_prefix, strlen(error_msg));
+	write(STDERR_FILENO, error_msg, strlen(error_msg));
+	write(STDERR_FILENO, "\n", 1);
+	exit(EXIT_FAILURE);
+}
+

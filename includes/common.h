@@ -14,7 +14,7 @@ typedef struct	ping_token_s
 	size_t			flags;
 	size_t			count;
 	size_t			ttl;
-	struct hostent	*host;
+	struct addrinfo	*host_list;
 }					ping_token_t;
 
 typedef struct		ping_info_s
