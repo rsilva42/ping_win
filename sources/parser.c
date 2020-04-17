@@ -44,25 +44,19 @@ int				parse_flags(ping_token_t *token, int ac, char **av)
 
 struct addrinfo	*parse_host(char **av)
 {
-	struct addrinfo	*host_list = NULL; //Remember to free
+	struct addrinfo	*host_list; //Remember to free
 	struct addrinfo	hints = { 0 };
 	int				gai_error;
 
 	printf("parsing host\n");
+
 	if (av[0] && av[1])
 		too_many_args_error();
 
-	printf("av[0]: %s\n", av[0]);
-
 	hints.ai_family = AF_INET;
-	gai_error = getaddrinfo("www.google.com", NULL, &hints, &host_list);
-	if (gai_error)
-		printf("here\n");
-	// 	get_host_error(gai_strerror(gai_error));
+	if ((gai_error = getaddrinfo(av[0], NULL, &hints, &host_list)))
+		get_host_error(gai_strerror(gai_error));
 
-	// printf("host_list->name: %s\n", host_list->ai_canonname);
-	// fflush(stdout);
-	exit(0);
 	return (host_list);
 }
 

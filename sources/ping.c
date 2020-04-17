@@ -8,7 +8,7 @@ void		handle_sigint(int signal)
 		ping_no_sigint = 0;
 }
 
-ping_connect_t	connect(ping_token_t token)
+ping_connect_t	ping_connect(ping_token_t token)
 {
 	ping_connect_t	connection;
 
@@ -25,13 +25,13 @@ time_t			get_time()
 	return (0);
 }
 
-void			send(ping_connect_t connection)
+void			ping_send(ping_connect_t connection)
 {
 	(void)connection;
 	printf("sending\n");
 }
 
-ping_reply_t	listen(ping_connect_t connection)
+ping_reply_t	ping_listen(ping_connect_t connection)
 {
 	ping_reply_t	reply;
 
@@ -43,7 +43,7 @@ ping_reply_t	listen(ping_connect_t connection)
 	return(reply);
 }
 
-// sets a connection and pings in a loop
+/*sets a connection and pings in a loop*/
 ping_info_t		ping(ping_token_t token)
 {
 	ping_info_t		info;
@@ -51,14 +51,14 @@ ping_info_t		ping(ping_token_t token)
 	time_t			send_time, reply_time; //data type may change
 	ping_reply_t	reply;
 
-	connection = connect(token);
+	connection = ping_connect(token);
 	signal(SIGINT, handle_sigint);
 	while (ping_no_sigint)
 	{
-		send(connection);
+		ping_send(connection);
 		info.sent_count++;
 		send_time = get_time();
-		reply = listen(connection);
+		reply = ping_listen(connection);
 		if (!reply.error)
 		{
 			reply_time = get_time();
