@@ -5,4 +5,6 @@
 
 # include "common.h"		/*ping_token_t*/
 
+void	flag_parse_error(ping_token_t *token);
+
 #endif

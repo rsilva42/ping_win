@@ -6,8 +6,6 @@
 
 # include "common.h"	/*ping_token_t, ping_info_t*/
 
-# define PING_FLAG_N 1
-
 typedef struct	ping_connect_s
 {
 	int		ip; //change type

@@ -66,7 +66,7 @@ ping_info_t		ping(ping_token_t token)
 		}
 		print_reply(reply, reply_time - send_time);
 		//move relevant reply data into info
-		if (token.flags & PING_FLAG_N)
+		if (token.flags & PING_FLAG_C)
 			token.count--;
 		if (!token.count)
 			break;
