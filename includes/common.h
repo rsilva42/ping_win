@@ -1,20 +1,22 @@
 #ifndef COMMON_H
-# define COMMON_H
+#define COMMON_H
 
-# include <stdlib.h>	/*size_t*/
-# include <stdio.h>		/*printf*/
+#include <stdlib.h>	/*size_t, exit*/
+#include <stdio.h>	/*printf*/
+#include <netdb.h>	/*NI_MAXHOST*/
 
 /*bit flags, used with '|' to set and '&' to check true or flase*/
-# define PING_FLAG_ERR 1
-# define PING_FLAG_C 2
-# define PING_FLAG_T 4
+#define PING_FLAG_ERR 1
+#define PING_FLAG_C 2
+#define PING_FLAG_T 4
 
 typedef struct	ping_token_s
 {
 	size_t			flags;
 	size_t			count;
 	size_t			ttl;
-	struct addrinfo	*host_list;
+	char			src_ip[NI_MAXHOST];
+	char			dest_ip[NI_MAXHOST];
 }					ping_token_t;
 
 typedef struct		ping_info_s

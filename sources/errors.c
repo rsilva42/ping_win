@@ -40,7 +40,7 @@ void	too_many_args_error(void)
 	print_usage();
 }
 
-void	get_host_error(const char *error_msg)
+void	print_error(const char *error_msg)
 {
 	char	*error_prefix = "ping_win: ";
 

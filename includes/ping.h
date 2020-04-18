@@ -1,17 +1,22 @@
 #ifndef PING_H
-# define PING_H
+#define PING_H
 
-# include <signal.h>	/*signal, SIGINT*/
-# include <unistd.h>	/*sleep*/
+#include <sys/socket.h>	/*socket*/
+#include <signal.h>		/*signal, SIGINT*/
+#include <unistd.h>		/*sleep*/
 
-# include "common.h"	/*ping_token_t, ping_info_t*/
+#include "common.h"		/*ping_token_t, ping_info_t*/
 
-typedef struct	ping_connect_s
+#define PING_PACKET_SIZE 64
+
+typedef struct	ping_packet_s
 {
-	int		ip; //change type
-	int		icmp; //change type
-}				ping_connect_t;
+	char		buffer[PING_PACKET_SIZE]
+	struct ip	*ip_header;
+	struct icmp	*icmp_header;
+};
 
+void	print_error(char *error_msg);
 void	print_reply(ping_reply_t reply, time_t rtt);
 
 #endif
