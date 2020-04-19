@@ -1,6 +1,6 @@
 #include "print.h"
 
-void	print_reply(ping_reply_t reply, time_t rtt)
+void	print_reply(ping_packet_t reply, time_t rtt)
 {
 	(void)reply;
 	(void)rtt;

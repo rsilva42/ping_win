@@ -47,6 +47,5 @@ void	print_error(const char *error_msg)
 	write(STDERR_FILENO, error_prefix, strlen(error_prefix));
 	write(STDERR_FILENO, error_msg, strlen(error_msg));
 	write(STDERR_FILENO, "\n", 1);
-	exit(EXIT_FAILURE);
 }
 

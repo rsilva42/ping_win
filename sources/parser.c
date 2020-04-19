@@ -50,7 +50,10 @@ struct addrinfo *dns_lookup(char *domain)
 
 	hints.ai_family = AF_INET;
 	if ((gai_error = getaddrinfo(domain, NULL, &hints, &host)))
+	{
 		print_error(gai_strerror(gai_error));
+		exit(EXIT_FAILURE);
+	}
 
 	return (host);
 }
@@ -61,7 +64,10 @@ void	reverse_dns_lookup(char ip_buf[], size_t ip_buflen, struct addrinfo *host)
 
 	if ((gai_error = getnameinfo(host->ai_addr, host->ai_addrlen,
 		ip_buf, ip_buflen, NULL, 0, NI_NUMERICHOST)))
+	{
 		print_error(gai_strerror(gai_error));
+		exit(EXIT_FAILURE);
+	}
 }
 
 void			parse_host(char host_ip[], size_t ip_buflen, char *hostname)
@@ -90,7 +96,10 @@ ping_token_t	*parse(int ac, char **av)
 	if (av[offset] && av[offset + 1])
 		too_many_args_error();
 	if (gethostname(src_name, sizeof(src_name)) < 0)
+	{
 		print_error("error getting host name");
+		exit(EXIT_FAILURE);
+	}
 
 	parse_host(token->src_ip, sizeof(token->src_ip), src_name);
 	parse_host(token->dest_ip, sizeof(token->dest_ip), av[offset]);
