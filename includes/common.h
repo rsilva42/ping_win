@@ -2,8 +2,10 @@
 #define COMMON_H
 
 #include <stdlib.h>	/*size_t, exit*/
-#include <stdio.h>	/*printf*/
+#include <unistd.h>	/*write, gethostname, sleep*/
 #include <netdb.h>	/*NI_MAXHOST*/
+
+#include <stdio.h>	/*printf*/
 
 /*bit flags, used with '|' to set and '&' to check true or flase*/
 #define PING_FLAG_ERR 1

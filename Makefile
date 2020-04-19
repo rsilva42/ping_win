@@ -18,8 +18,14 @@ OBJS =	$(SRCS:sources/%.c=objects/%.o)
 all: $(NAME)
 
 # compile binary
+# sets setgid and setuid permissions if user is root
 $(NAME): $(OBJS)
 	$(CC) $(CCFLAGS) $(OBJS) -o $(NAME)
+	@if [ "$(shell /usr/bin/id -u)" -eq "0" ]; \
+	then \
+		make clean > /dev/null; \
+		chmod gu+s $(NAME); \
+	fi
 
 # compile object
 objects/%.o: sources/%.c

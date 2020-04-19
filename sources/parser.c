@@ -64,35 +64,37 @@ void	reverse_dns_lookup(char ip_buf[], size_t ip_buflen, struct addrinfo *host)
 		print_error(gai_strerror(gai_error));
 }
 
-void			parse_host(char host_ip[], size_t ip_buflen, char **av)
+void			parse_host(char host_ip[], size_t ip_buflen, char *hostname)
 {
 	struct addrinfo	*host;
 
 	printf("parsing host\n");
 
-	if (av[0] && av[1])
-		too_many_args_error();
-
-	host = dns_lookup(av[0]);
+	host = dns_lookup(hostname);
 
 	reverse_dns_lookup(host_ip, ip_buflen, host);
 	freeaddrinfo(host);
 }
 
 /*tokenizes user input*/
-ping_token_t	parse(int ac, char **av)
+ping_token_t	*parse(int ac, char **av)
 {
 	size_t			offset;
-	ping_token_t	token = { 0 };
-	char			src_ip[NI_MAXHOST];
+	ping_token_t	*token = malloc(sizeof(ping_token_t));
+	char			src_name[NI_MAXHOST] = { 0 };
 
 
 
-	offset = parse_flags(&token, ac, av);
+	offset = parse_flags(token, ac, av);
+
+	if (av[offset] && av[offset + 1])
+		too_many_args_error();
 	if (gethostname(src_name, sizeof(src_name)) < 0)
 		print_error("error getting host name");
-	parse_host(token.src_ip, sizeof(dest_ip), src_name)
-	parse_host(token.dest_ip, sizeof(token.host_ip), av + offset);
-	printf("host ip: %s\n", token.host_ip);
+
+	parse_host(token->src_ip, sizeof(token->src_ip), src_name);
+	parse_host(token->dest_ip, sizeof(token->dest_ip), av[offset]);
+
+	printf("src ip:  %s\ndest ip: %s\n", token->src_ip, token->dest_ip);
 	return (token);
 }
