@@ -43,9 +43,8 @@ void			set_ip_header(ping_token_t *token, ping_packet_t *packet)
 	header->ip_id = htons(1111);
 	header->ip_off = htons(0);
 	header->ip_ttl = 255;
-	header->ip_p = IPPROTO_IP;
+	header->ip_p = IPPROTO_ICMP;
 	header->ip_sum = 0;
-	inet_aton(token->src_ip, &header->ip_src);
 	inet_aton(token->dest_ip, &header->ip_dst);
 }
 
@@ -185,7 +184,7 @@ ping_info_t		ping(ping_token_t *token)
 
 		if (ping_send(socket_fd, &send_packet, &dest_sockaddr))
 		{
-			sleep(PING_TIMEOUT);
+			sleep(PING_TIMEOUT + 1);
 			continue;
 		}
 		info.sent_count++;
@@ -198,6 +197,7 @@ ping_info_t		ping(ping_token_t *token)
 			info.recv_count++;
 			print_reply(reply_packet, reply_time - send_time);
 		}
+		sleep(1);
 		//move relevant reply data into info
 		if (token->flags & PING_FLAG_C)
 		{

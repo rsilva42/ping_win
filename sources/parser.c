@@ -2,7 +2,7 @@
 
 int				pull_flag_val(char **flag_str)
 {
-	int				val = 0;
+	int		val = 0;
 
 	if (flag_str[0][2])
 		val = atoi(&flag_str[0][2]);
@@ -31,7 +31,7 @@ void			get_flag(ping_token_t *token, char **flag_str)
 
 int				parse_flags(ping_token_t *token, int ac, char **av)
 {
-	int				i;
+	int		i;
 
 	for (i = 1; i < ac && av[i][0] == '-'; i++)
 	{
@@ -44,7 +44,7 @@ int				parse_flags(ping_token_t *token, int ac, char **av)
 
 struct addrinfo *dns_lookup(char *domain)
 {
-	struct addrinfo	*host; //Remember to free
+	struct addrinfo	*host;
 	struct addrinfo	hints = { 0 };
 	int				gai_error;
 
@@ -101,7 +101,6 @@ ping_token_t	*parse(int ac, char **av)
 		exit(EXIT_FAILURE);
 	}
 
-	parse_host(token->src_ip, sizeof(token->src_ip), src_name);
 	parse_host(token->dest_ip, sizeof(token->dest_ip), av[offset]);
 
 	printf("src ip:  %s\ndest ip: %s\n", token->src_ip, token->dest_ip);
