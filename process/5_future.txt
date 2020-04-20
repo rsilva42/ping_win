@@ -1,0 +1,6 @@
+I wasn't able to get many extra features in due to time, but I do have a list
+of features I want to implement in the coming week.
+TODO:
+ipv6
+more stats in print_info
+more flags

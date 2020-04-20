@@ -10,6 +10,8 @@ SRCS =	sources/main.c\
 		sources/print.c\
 		sources/errors.c
 
+# substitute "sources/filename.c" to "objects/filename.o"
+# where filename is '%'
 OBJS =	$(SRCS:sources/%.c=objects/%.o)
 
 .PHONY: all clean fclean re
@@ -32,11 +34,15 @@ objects/%.o: sources/%.c
 	@/bin/mkdir -p objects
 	$(CC) $(CCFLAGS) -c $< -o $@
 
-# delete objects
+# delete objects and remove directory if empty
 clean:
 	/bin/rm -f $(OBJS)
+	@if [ -d "objects" ]; \
+	then \
+		/bin/rmdir --ignore-fail-on-non-empty objects;\
+	fi
 
-# delete objeects and binary
+# delete objects and binary
 fclean: clean
 	/bin/rm -f $(NAME)
 

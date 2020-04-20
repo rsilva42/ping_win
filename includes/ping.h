@@ -2,17 +2,14 @@
 #define PING_H
 
 #include <sys/socket.h>			/*socket*/
-#include <netinet/ip.h>			/*ip*/
-#include <netinet/ip_icmp.h>	/*icmp*/
 #include <arpa/inet.h>			/*inet_aton*/
-#include <string.h>				/*memset*/
 #include <signal.h>				/*signal, SIGINT*/
+#include <time.h>				/*clock_gettime, CLOCK_MONOTONIC*/
 
 #include "common.h"				/*ping_token_t, ping_info_t*/
 
-#define PING_TIMEOUT	4
+#define PING_TIMEOUT	1
 
-void	print_error(char *error_msg);
-void	print_reply(ping_packet_t reply, time_t rtt); //this may change
+void	print_reply(ping_packet_t *reply, uint64_t rtt);
 
 #endif

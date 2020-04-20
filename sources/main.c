@@ -5,6 +5,11 @@ int		main(int argc, char **argv)
 	ping_token_t	*token;
 	ping_info_t		info;
 
+	if (geteuid() != 0)
+	{
+		print_error("root access required to create socket, run as root");
+		return (EXIT_FAILURE);
+	}
 	if (argc > 1)
 	{
 		token = parse(argc, argv);

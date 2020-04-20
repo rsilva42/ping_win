@@ -8,10 +8,9 @@ void			handle_sigint(int signal)
 		ping_no_sigint = 0;
 }
 
-time_t			get_time()
+uint64_t		time_to_int(struct timespec time)
 {
-	printf("getting the time\n");
-	return (0);
+	return ((time.tv_sec * 1000000000) + time.tv_nsec);
 }
 
 int				ping_create_socket(void)
@@ -42,7 +41,12 @@ void			set_ip_header(ping_token_t *token, ping_packet_t *packet)
 	header->ip_len = htons(sizeof(packet->buffer));
 	header->ip_id = htons(1111);
 	header->ip_off = htons(0);
-	header->ip_ttl = 255;
+
+	if (token->flags & PING_FLAG_T)
+		header->ip_ttl = token->ttl;
+	else
+		header->ip_ttl = 255;
+
 	header->ip_p = IPPROTO_ICMP;
 	header->ip_sum = 0;
 	inet_aton(token->dest_ip, &header->ip_dst);
@@ -64,9 +68,6 @@ void			ping_create_packet(ping_token_t *token, ping_packet_t *packet)
 
 	set_ip_header(token, packet);
 	set_icmp_header(packet->icmp_header);
-	//to do: make sure that the headers are right,
-	//print output, error check (ex check if root),
-	//peer review, check formatting
 }
 
 void			set_dest_addr(struct sockaddr_in *dest_addr, struct in_addr dest_ip)
@@ -101,8 +102,6 @@ int				ping_send(int socket_fd, ping_packet_t *packet, struct sockaddr_in *desta
 	u_short		*ip_sum = &packet->ip_header->ip_sum;
 	u_short		*icmp_sum = &packet->icmp_header->icmp_cksum;
 
-	printf("sending\n");
-
 	*icmp_sum = 0;
 	*ip_sum = packet_checksum((u_short *)(packet->buffer), packet->ip_header->ip_hl);
 	*icmp_sum = packet_checksum((u_short *)(packet->icmp_header),
@@ -111,9 +110,13 @@ int				ping_send(int socket_fd, ping_packet_t *packet, struct sockaddr_in *desta
 	if (sendto(socket_fd, packet->buffer, sizeof(packet->buffer), 0,
 				(struct sockaddr *)destaddr, sizeof(*destaddr)) < 0)
 	{
-		print_error("error sending packet\n");
+		packet->icmp_header->icmp_seq += 1;
+		print_error("error sending packet");
 		return (1);
 	}
+	packet->icmp_header->icmp_seq += 1;
+
+	/*return zero on success*/
 	return (0);
 }
 
@@ -125,17 +128,14 @@ int				ping_listen(int socket_fd, fd_set *select_fd,
 	int				select_ret, recv_len;
 	socklen_t		dest_len = sizeof(*destaddr);
 
-	printf("listening\n");
-
 	time.tv_sec = PING_TIMEOUT;
 	time.tv_usec = 0;
 
 	select_ret = select(socket_fd + 1, select_fd, NULL, NULL, &time);
 
-	/*for debug, will probably remove the printfs*/
 	if (select_ret < 0)
 	{
-		printf("select error\n");
+		print_error("select error");
 		return (1);
 	}
 	else if (select_ret > 0)
@@ -144,15 +144,15 @@ int				ping_listen(int socket_fd, fd_set *select_fd,
 								0, (struct sockaddr *)destaddr, &dest_len);
 		if (recv_len < 0)
 		{
-			printf("recvfrom error\n");
+			print_error("recvfrom error");
 			return (1);
 		}
 		else
-			printf("received %d bytes\n", recv_len);
+			printf("received %d bytes form %s: ", recv_len, inet_ntoa(((struct sockaddr_in *)destaddr)->sin_addr));
 	}
 	else
 	{
-		printf("timed out\n");
+		print_error("timed out");
 		return (1);
 	}
 
@@ -165,12 +165,11 @@ ping_info_t		ping(ping_token_t *token)
 {
 	int					socket_fd;
 	ping_packet_t		send_packet;
+	ping_packet_t		reply_packet;
 	struct sockaddr_in	dest_sockaddr;
 	fd_set				select_fd;
-	ping_packet_t		reply_packet;
-	//below initializations are from the pseudocode
-	time_t			send_time, reply_time; //data type may change
-	ping_info_t		info;
+	struct timespec		send_time, reply_time;
+	ping_info_t			info = { 0 };
 
 	socket_fd = ping_create_socket();
 	ping_create_packet(token, &send_packet);
@@ -182,23 +181,23 @@ ping_info_t		ping(ping_token_t *token)
 		FD_ZERO(&select_fd);
 		FD_SET(socket_fd, &select_fd);
 
+		info.sent_count++;
 		if (ping_send(socket_fd, &send_packet, &dest_sockaddr))
 		{
-			sleep(PING_TIMEOUT + 1);
+			sleep(PING_TIMEOUT);
 			continue;
 		}
-		info.sent_count++;
-		send_time = get_time();
+		clock_gettime(CLOCK_MONOTONIC, &send_time);
 
 		if (!ping_listen(socket_fd, &select_fd,
 						&reply_packet, &dest_sockaddr))
 		{
-			reply_time = get_time();
+			clock_gettime(CLOCK_MONOTONIC, &reply_time);
 			info.recv_count++;
-			print_reply(reply_packet, reply_time - send_time);
+			print_reply(&reply_packet,
+						time_to_int(reply_time) - time_to_int(send_time));
 		}
 		sleep(1);
-		//move relevant reply data into info
 		if (token->flags & PING_FLAG_C)
 		{
 			token->count--;

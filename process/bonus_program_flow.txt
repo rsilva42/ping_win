@@ -1,0 +1,28 @@
+I hope the formatting of my .c files is intuitive, but to help here are the
+ordering rules:
+1. the functions are read from the bottom up
+2. the sub functions appear directly above its parent
+3. helper functions that don't contribute to the logic are at the top of
+   the file
+4. functions are in order of appearance in their parent
+
+ex:
+
+ D()----
+       |
+       |
+--B()<--
+| {
+|   D
+| }
+--C()
+|
+-->A()
+   {
+     B
+     C
+   }
+
+A calls B and C, so in call order B and C show up.
+Since B calls D, D shows up directly above... this looked better in my head
+maybe I am just sleep deprived =.=

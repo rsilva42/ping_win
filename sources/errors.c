@@ -1,6 +1,6 @@
-#include "errors.h"
+#include "common.h"
 
-/*print usage info*/
+/*print usage info and exit*/
 void	print_usage(void)
 {
 	char	*usage_str = "usage: ./ping_win [-c count] [-t ttl] destination\n";
@@ -8,6 +8,7 @@ void	print_usage(void)
 	exit(EXIT_FAILURE);
 }
 
+/*print flag specific errors*/
 void	flag_parse_error(ping_token_t *token)
 {
 	char	*error_prefix = "ping_win: ";

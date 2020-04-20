@@ -1,41 +1,50 @@
 #include "parser.h"
 
-int				pull_flag_val(char **flag_str)
+/*pulls the associated value form a flag*/
+int				pull_flag_val(int *offset, char **flag_str)
 {
 	int		val = 0;
 
+	/*if value is in the same string*/
 	if (flag_str[0][2])
 		val = atoi(&flag_str[0][2]);
+	/*if value is in the next string*/
 	else if (flag_str[1])
+	{
 		val = atoi(flag_str[1]);
+		*offset = 1;
+	}
 	return (val);
 }
 
-void			get_flag(ping_token_t *token, char **flag_str)
+/*set flag in token and return an offset*/
+int			get_flag(ping_token_t *token, char **flag_str)
 {
+	int		offset = 0;
 	if (flag_str[0][1] == 'c')
 	{
 		token->flags |= PING_FLAG_C;
-		if ((token->count = pull_flag_val(flag_str)) == 0)
+		if ((token->count = pull_flag_val(&offset, flag_str)) == 0)
 			token->flags |= PING_FLAG_ERR;
 	}
 	else if (flag_str[0][1] == 't')
 	{
 		token->flags |= PING_FLAG_T;
-		if ((token->ttl = pull_flag_val(flag_str)) == 0)
+		if ((token->ttl = pull_flag_val(&offset, flag_str)) == 0)
 			token->flags |= PING_FLAG_ERR;
 	}
 	else
 		token->flags |= PING_FLAG_ERR;
+	return (offset);
 }
 
-int				parse_flags(ping_token_t *token, int ac, char **av)
+int				parse_flags(ping_token_t *token, int argc, char **argv)
 {
 	int		i;
 
-	for (i = 1; i < ac && av[i][0] == '-'; i++)
+	for (i = 1; i < argc && argv[i][0] == '-'; i++)
 	{
-		get_flag(token, &av[i]);
+		i += get_flag(token, &argv[i]);
 		if (token->flags & PING_FLAG_ERR)
 			flag_parse_error(token);
 	}
@@ -74,8 +83,6 @@ void			parse_host(char host_ip[], size_t ip_buflen, char *hostname)
 {
 	struct addrinfo	*host;
 
-	printf("parsing host\n");
-
 	host = dns_lookup(hostname);
 
 	reverse_dns_lookup(host_ip, ip_buflen, host);
@@ -83,26 +90,19 @@ void			parse_host(char host_ip[], size_t ip_buflen, char *hostname)
 }
 
 /*tokenizes user input*/
-ping_token_t	*parse(int ac, char **av)
+ping_token_t	*parse(int argc, char **argv)
 {
 	size_t			offset;
 	ping_token_t	*token = malloc(sizeof(ping_token_t));
-	char			src_name[NI_MAXHOST] = { 0 };
 
+	offset = parse_flags(token, argc, argv);
 
-
-	offset = parse_flags(token, ac, av);
-
-	if (av[offset] && av[offset + 1])
+	if (argv[offset] && argv[offset + 1])
 		too_many_args_error();
-	if (gethostname(src_name, sizeof(src_name)) < 0)
-	{
-		print_error("error getting host name");
-		exit(EXIT_FAILURE);
-	}
 
-	parse_host(token->dest_ip, sizeof(token->dest_ip), av[offset]);
+	/*resolve destination ip*/
+	parse_host(token->dest_ip, sizeof(token->dest_ip), argv[offset]);
 
-	printf("src ip:  %s\ndest ip: %s\n", token->src_ip, token->dest_ip);
+	printf("connecting to %s ip: %s\n", argv[offset], token->dest_ip);
 	return (token);
 }

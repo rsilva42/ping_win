@@ -1,0 +1,5 @@
+A parser must be rigid and ready to properly respond to erroneous or malicious
+input, in my parser I kept it as simple as I could without compromising its
+integrity. Here we get our first look at network programming however,
+specifically in the parse_host function where the hostname is passed through
+a dns and reverse dns lookup to arrive at the destination's ip_address.

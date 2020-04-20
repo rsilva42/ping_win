@@ -1,0 +1,7 @@
+A final step towards completion, this section was mainly setting up printfs
+to display the data that was gathered in the previous steps. So instead I will
+use this file to thank you, specifically for reading through these, and
+Cloudflare for this opportunity, I learned a lot from this project. I hope the
+code and these files are clean and sensical.
+To a better internet and Stay safe!
+- Rodrigo Silva

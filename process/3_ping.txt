@@ -1,0 +1,12 @@
+Here is where the programming really started to pick up, there were so many
+different structs and approaches that I thought my head was going to explode!
+To manage I just took it little steps, keeping my focus on one function at
+a time, eventually I was done with create_socket, then create_packet and so on
+until I finished listen and had a complete program. Or so I thought until I
+began running tests. Initially I thought it all worked because I tested
+on localhost and it replied as expected, but upon running it on a site's
+ip I only received time outs... After an hour of debugging by sending
+the packets to another computer on the network and capturing them I found
+that there was a problem with the header, it was a classic typo where
+I put IPPROTO_IP instead of IPPROTO_ICMP. I laughed it off as I fixed it
+and the rest of the program fell beautifully.
