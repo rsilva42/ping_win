@@ -33,10 +33,6 @@ Will send the packet's time to live to 3
 
 Thank you for your time, I documented some of my thoughts in the
 process folder so feel free to look at that if you want to see more
-about the development process of this program, I'll also be implementing
-more features that I didn't get to implement here on my github:
-https://github.com/rsilva42/ping_win
-It may be private for a short time after my submission to respect
-the coding challenge.
+about the development process of this program.
 Happy to learn so much; and stay safe!
 -Rodrigo Silva
