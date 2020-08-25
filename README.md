@@ -34,5 +34,5 @@ Will send the packet's time to live to 3
 Thank you for your time, I documented some of my thoughts in the
 process folder so feel free to look at that if you want to see more
 about the development process of this program.
-Happy to learn so much; and stay safe!
+Happy to learn so much and stay safe!
 -Rodrigo Silva
